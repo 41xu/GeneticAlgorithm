@@ -12,6 +12,13 @@ mutationRate=0.01
 def f1(x1, x2):
     return x1 * x1 + x2 * x2
 
+def f3(x1,x2):
+    return x1*x1-10*math.cos(2*math.pi*x1)+10+\
+           x2*x2-10*math.cos(2*math.pi*x2)+10
+
+def f4(x1,x2):
+    return (x1*x1+x2*x2)/4000-math.cos(x1/1)*math.cos(x2/2)+1
+
 
 def EncodingInit(populationNum, chromoLen):
     population = []
@@ -58,6 +65,24 @@ def fitness1(X1, X2,population):
     for i in range(len(population)):
         Y[i] = maxY - Y[i]
 
+    return Y
+
+def fitness3(X1,X2,population):
+    Y=[]
+    for i in range(len(population)):
+        Y.append(f3(X1[i],X2[i]))
+    maxY=max(Y)
+    for i in range(len(population)):
+        Y[i]=maxY-Y[i]
+    return Y
+
+def fitness4(X1,X2,population):
+    Y=[]
+    for i in range(len(population)):
+        Y.append(f4(X1[i],X2[i]))
+    maxY=max(Y)
+    for i in range(len(population)):
+        Y[i]=maxY-Y[i]
     return Y
 
 
@@ -121,10 +146,74 @@ if __name__ == '__main__':
             # print(len(totalPop[-1]))
         else:
             break
+    print("f1(x)=sum(xi)^2 for i in range(1,3)")
     print("x1,x2:",X[-1])
     print("y:",Y[-1])
+    print("Precision for 10^(-4)")
 
 
+    populationNum = 50000
+    chromoLen = 17 * 2  # 2D X in f1, therefore the chromosome len will be 21*2, 1-21: x1, 22-42: x2
+    maxX = 5.12
+    minX = -5.12
+    crossRate = 0.7
+    mutationRate = 0.01
+
+    totalPop=[]
+    X=[]
+    Y=[]
+    population = EncodingInit(populationNum, chromoLen)
+    totalPop.append(population)
+    for i in range(populationNum):
+        X1, X2 = Decoding(totalPop[-1], chromoLen)
+        # print(X1,X2)
+        y = fitness3(X1, X2,totalPop[-1])
+        X.append([X1,X2])
+        Y.append(y)
+        newpop = selection(totalPop[-1], y)
+        if newpop!=None:
+            newpop = crossover(newpop)
+            newpop = mutation(newpop)
+            totalPop.append(newpop)
+            # print(len(totalPop[-1]))
+        else:
+            break
+    print("f3(x)=sum(xi^2-10*cos(2*pi*xi)+10) for i in range(1,3)")
+    print("x1,x2=",X[-1])
+    print("y:",Y[-1])
+    print("Precision for 10^(-4)")
+
+
+    populationNum = 50000
+    chromoLen = 24 * 2  # 2D X in f1, therefore the chromosome len will be 21*2, 1-21: x1, 22-42: x2
+    maxX = 600
+    minX = -600
+    crossRate = 0.7
+    mutationRate = 0.01
+
+    totalPop=[]
+    X=[]
+    Y=[]
+    population = EncodingInit(populationNum, chromoLen)
+    totalPop.append(population)
+    for i in range(populationNum):
+        X1, X2 = Decoding(totalPop[-1], chromoLen)
+        # print(X1,X2)
+        y = fitness4(X1, X2,totalPop[-1])
+        X.append([X1,X2])
+        Y.append(y)
+        newpop = selection(totalPop[-1], y)
+        if newpop!=None:
+            newpop = crossover(newpop)
+            newpop = mutation(newpop)
+            totalPop.append(newpop)
+            # print(len(totalPop[-1]))
+        else:
+            break
+    print("f4(x)=(x1*x1+x2*x2)/4000-math.cos(x1/1)*math.cos(x2/2)+1")
+    print("x1,x2=",X[-1])
+    print("y:",Y[-1])
+    print("Precision for 10^(-4)")
 
 
 
